@@ -12,12 +12,12 @@ Single tracker simply starts a timer and can be queried anytime.
 
 **Usage**:
 
-$progressTracker = new ProgressSingleTracker();
+    $progressTracker = new ProgressSingleTracker();
 
-for ($i = 0; $i < 10; $i++) {
-  // Do some heavy calculations.
-  sleep(0.1);
-}
+    for ($i = 0; $i < 10; $i++) {
+      // Do some heavy calculations.
+      sleep(0.1);
+    }
 
 echo $progressTracker->report();
 
@@ -28,10 +28,10 @@ to be updated whenever iteration loops.
 
 **Usage**:
 
-$vector = range(0, 30);
-$progressTracker = new ProgressBatchTracker(count($vector));
+    $vector = range(0, 30);
+    $progressTracker = new ProgressBatchTracker(count($vector));
 
-foreach ($vector as $item) {
-  sleep(0.1);
-  echo $progressTracker->step() . "\n";
-}
+    foreach ($vector as $item) {
+      sleep(0.1);
+      echo $progressTracker->step() . "\n";
+    }
