@@ -35,6 +35,7 @@ class ProgressSingleTracker extends ProgressBasicTracker {
     $time_elapsed = time() - $this->startTime;
     return 'Time elapsed: ' . $time_elapsed . ' sec (' . ($time_elapsed / 60) . ' min) ' . $this->memoryTracker->report();
   }
+
 }
 
 class ProgressBatchTracker extends ProgressSingleTracker {

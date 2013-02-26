@@ -19,7 +19,7 @@ Single tracker simply starts a timer and can be queried anytime.
       sleep(0.1);
     }
 
-echo $progressTracker->report();
+    echo $progressTracker->report();
 
 # ProgressBatchTracker
 
