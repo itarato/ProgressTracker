@@ -3,6 +3,8 @@
  * @file
  */
 
+define('PROGRESS_REPORTER_NUMBER_PRECISION', 2);
+
 interface iProgressReporter {
 
   public function report();
@@ -21,28 +23,43 @@ abstract class ProgressBasicTracker implements iProgressReporter {
 
 }
 
-class ProgressSingleTracker extends ProgressBasicTracker {
+class ProgressGeneralTracker extends ProgressBasicTracker {
 
-  protected  $startTime;
+  protected $startTime;
+
+  protected $currentTime;
+
+  protected $previousTime;
 
   public function __construct() {
     parent::__construct();
 
-    $this->startTime = time();
+    $this->startTime = microtime(TRUE);
+    $this->currentTime = microtime(TRUE);
+    $this->previousTime = microtime(TRUE);
+  }
+
+  public function ping() {
+    $this->previousTime = $this->currentTime;
+    $this->currentTime = microtime(TRUE);
+    return $this->report();
   }
 
   public function report() {
-    $time_elapsed = time() - $this->startTime;
-    return 'Time elapsed: ' . $time_elapsed . ' sec (' . ($time_elapsed / 60) . ' min) ' . $this->memoryTracker->report();
+    $time_elapsed = number_format(microtime(TRUE) - $this->startTime, PROGRESS_REPORTER_NUMBER_PRECISION);
+    $time_ping = number_format($this->currentTime - $this->previousTime, PROGRESS_REPORTER_NUMBER_PRECISION);
+    return 'S ' . $time_ping . ' ' .
+      'A ' . $time_elapsed . ' | ' .
+      $this->memoryTracker->report();
   }
 
 }
 
-class ProgressBatchTracker extends ProgressSingleTracker {
+class ProgressBatchTracker extends ProgressGeneralTracker {
 
-  protected  $itemsTotalCount;
+  protected $itemsTotalCount;
 
-  protected  $itemsFinishedCount = 0;
+  protected $itemsFinishedCount = 0;
 
   public function __construct($itemCount) {
     parent::__construct();
@@ -50,28 +67,27 @@ class ProgressBatchTracker extends ProgressSingleTracker {
     $this->itemsTotalCount = $itemCount;
   }
 
-  public function step() {
+  public function ping() {
     $this->itemsFinishedCount++;
-    return $this->report();
+    return parent::ping();
   }
 
   public function report() {
-    $time_elapsed = time() - $this->startTime;
-    $time_left = ($time_elapsed / $this->itemsFinishedCount) * ($this->itemsTotalCount - $this->itemsFinishedCount);
+    $time_elapsed = microtime(TRUE) - $this->startTime;
+    $time_left = number_format(($time_elapsed / $this->itemsFinishedCount) * ($this->itemsTotalCount - $this->itemsFinishedCount), PROGRESS_REPORTER_NUMBER_PRECISION);
 
-    return 'Processed items: ' . $this->itemsFinishedCount . ' / ' . $this->itemsTotalCount .
-      ' Time elapsed: ' . $time_elapsed . ' sec (' . ($time_elapsed / 60) . ' min) ' .
-      'Time left: ' . $time_left . ' sec (' . ($time_left / 60) . ' min) ' .
-      $this->memoryTracker->report();
+    return 'P ' . $this->itemsFinishedCount . ' / ' . $this->itemsTotalCount .
+      ' L: ' . number_format($time_left, PROGRESS_REPORTER_NUMBER_PRECISION) . ' | ' .
+      parent::report();
   }
 
 }
 
 class ProgressMemoryTracker implements iProgressReporter {
 
-  protected  $memoryInitial;
+  protected $memoryInitial;
 
-  protected  $memoryInitialReal;
+  protected $memoryInitialReal;
 
   public function __construct() {
     $this->memoryInitial = memory_get_usage(FALSE);
@@ -106,7 +122,7 @@ class ProgressMemoryTracker implements iProgressReporter {
   }
 
   public function report() {
-    return 'Memory consumption: ' . $this->getConsumption() . ' (total: ' . memory_get_usage(TRUE) . ')' . ' Available memory: ' . $this->getAvailableMemory();
+    return 'MEM ' . $this->getConsumption() . ' init ' . memory_get_usage(TRUE) . ' total ' . $this->getAvailableMemory() . ' left';
   }
 
 }
