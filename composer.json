@@ -1,13 +1,14 @@
 {
-    "name": "ProgressTracker",
-    "description": "Simple performance tracker for PHP processes.",
-    "license": "GPL",
-    "authors": [
-        {
-            "name": "Peter Arato"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0"
+  "name": "ProgressTracker",
+  "description": "Simple performance tracker for PHP processes.",
+  "license": "GPL",
+  "authors": [
+    {
+      "name": "Peter Arato"
     }
+  ],
+  "require": {
+    "php": ">=5.3.0",
+    "wisembly/elephant.io": "dev-master"
+  }
 }
