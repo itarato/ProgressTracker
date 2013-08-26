@@ -21,6 +21,10 @@ echo "BATCH: \n\n";
 demoBatch();
 echo "\n\n";
 
+echo "SOCKET: \n\n";
+demoSocket();
+echo "\n\n";
+
 /**
  * Memory
  */
@@ -53,5 +57,18 @@ function demoBatch() {
   for ($i = 10; $i--;) {
     usleep(500000);
     echo $batchProcess->report() . "\n";
+  }
+}
+
+/**
+ * Socket.
+ */
+function demoSocket() {
+  $r = new Reporter\SocketIOReporter();
+  $generalProgress = new Tracker\ProgressGeneralTracker($r);
+
+  for ($i = 100; $i--;) {
+    usleep(rand(100000, 200000));
+    $generalProgress->report();
   }
 }

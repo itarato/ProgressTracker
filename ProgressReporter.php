@@ -48,17 +48,25 @@ class SocketIOReporter implements IReporter {
 
   public $connectionURI;
 
-  public function __construct($connectionURI = 'http://localhost:8000') {
+  protected $filter;
+
+  public function __construct($connectionURI = 'http://localhost:8888') {
     $this->connectionURI = $connectionURI;
+    $this->filter = array('time', 'step');
   }
 
   public function report($report) {
     require_once __DIR__ . '/elephant.io/lib/ElephantIO/Client.php';
 
+    $item = $report;
+    foreach ($this->filter as $filter) {
+      $item = $item[$filter];
+    }
+
     $elephant = new Client($this->connectionURI, 'socket.io', 1, FALSE, TRUE, TRUE);
     $elephant->init();
 
-    $elephant->send(Client::TYPE_EVENT, NULL, NULL, json_encode(array('name' => 'progress', 'args' => $report)));
+    $elephant->send(Client::TYPE_EVENT, NULL, NULL, json_encode(array('name' => 'progress', 'args' => $item)));
 
     $elephant->close();
   }

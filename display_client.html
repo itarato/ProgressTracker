@@ -1,0 +1,18 @@
+<script src="/socket.io/socket.io.js"></script>
+<script src="/node_modules/smoothie/smoothie.js"></script>
+
+<canvas id="display" width="400" height="100"></canvas>
+
+<script>
+  var socket = io.connect('http://localhost');
+  socket.emit('connect', {});
+
+  socket.on('update', function (data) {
+    line.append(new Date().getTime(), data);
+  });
+
+  var smoothie = new SmoothieChart();
+  smoothie.streamTo(document.getElementById('display'), 500);
+  var line = new TimeSeries();
+  smoothie.addTimeSeries(line);
+</script>
