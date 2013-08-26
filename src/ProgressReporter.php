@@ -6,8 +6,6 @@
 
 namespace itarato\ProgressTracker\Reporter;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 use ElephantIO\Client;
 
 interface IReporter {
@@ -61,7 +59,7 @@ class SocketIOReporter implements IReporter {
   }
 
   public function report($report) {
-//    require_once __DIR__ . '/elephant.io/lib/ElephantIO/Client.php';
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     $item = $report;
     foreach ($this->filter as $filter) {
