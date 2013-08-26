@@ -6,8 +6,8 @@
 
 require_once __DIR__ . '/../ProgressTracker.php';
 
-use ProgressTracker\Tracker as Tracker;
-use ProgressTracker\Reporter as Reporter;
+use itarato\ProgressTracker\Tracker as Tracker;
+use itarato\ProgressTracker\Reporter as Reporter;
 
 class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
 

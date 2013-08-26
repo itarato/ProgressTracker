@@ -4,7 +4,7 @@
  * Reporters.
  */
 
-namespace ProgressTracker\Reporter;
+namespace itarato\ProgressTracker\Reporter;
 
 use ElephantIO\Client;
 
@@ -50,9 +50,12 @@ class SocketIOReporter implements IReporter {
 
   protected $filter;
 
+  protected $hash;
+
   public function __construct($connectionURI = 'http://localhost:8888') {
     $this->connectionURI = $connectionURI;
     $this->filter = array('time', 'step');
+    $this->hash = spl_object_hash($this);
   }
 
   public function report($report) {
@@ -66,7 +69,10 @@ class SocketIOReporter implements IReporter {
     $elephant = new Client($this->connectionURI, 'socket.io', 1, FALSE, TRUE, TRUE);
     $elephant->init();
 
-    $elephant->send(Client::TYPE_EVENT, NULL, NULL, json_encode(array('name' => 'progress', 'args' => $item)));
+    $elephant->send(Client::TYPE_EVENT, NULL, NULL, json_encode(array('name' => 'progress', 'args' => array(
+      'line' => $this->hash,
+      'value' => $item,
+    ))));
 
     $elephant->close();
   }

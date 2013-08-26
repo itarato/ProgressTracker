@@ -3,9 +3,9 @@
  * @file
  */
 
-namespace ProgressTracker\Tracker;
+namespace itarato\ProgressTracker\Tracker;
 
-use ProgressTracker\Reporter\IReporter;
+use itarato\ProgressTracker\Reporter\IReporter;
 
 require_once 'ProgressReporter.php';
 

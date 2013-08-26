@@ -2,8 +2,8 @@
 
 require_once 'ProgressTracker.php';
 
-$string_reporter = new \ProgressTracker\Reporter\StringReporter();
-$tracker = new \ProgressTracker\Tracker\ProgressGeneralTracker($string_reporter);
+$string_reporter = new itarato\ProgressTracker\Reporter\StringReporter();
+$tracker = new itarato\ProgressTracker\Tracker\ProgressGeneralTracker($string_reporter);
 
 for ($i = 10; $i--;) {
   // Illusion of hard CPU/IO work.

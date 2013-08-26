@@ -7,12 +7,28 @@
   var socket = io.connect('http://localhost');
   socket.emit('connect', {});
 
+  var lines = {};
+
   socket.on('update', function (data) {
-    line.append(new Date().getTime(), data);
+    if (!lines.hasOwnProperty(data.line)) {
+      lines[data.line] = new TimeSeries();
+      smoothie.addTimeSeries(lines[data.line], {
+        strokeStyle: getRandomColor(),
+        lineWidth: 3
+      });
+    }
+
+    lines[data.line].append(new Date().getTime(), data.value);
   });
 
   var smoothie = new SmoothieChart();
   smoothie.streamTo(document.getElementById('display'), 500);
-  var line = new TimeSeries();
-  smoothie.addTimeSeries(line);
+
+  function getRandomColor() {
+    var components = [];
+    for (var i = 3; i--;) {
+      components.push(Math.floor(Math.random() * 128 + 128));
+    }
+    return 'rgb(' + components.join(',') + ')';
+  }
 </script>
