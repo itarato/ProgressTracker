@@ -1,6 +1,8 @@
 ProgressTracker
 ===============
 
+[![Build Status](https://travis-ci.org/itarato/ProgressTracker.png?branch=master)](https://travis-ci.org/itarato/ProgressTracker)
+
 Tiny PHP classes to measure PHP process
 
 ProgressTracker contains 2 helper classes for measuring progress: a single and a
