@@ -4,7 +4,7 @@
  * Example usage
  */
 
-require_once __DIR__ . '/../ProgressTracker.php';
+require_once __DIR__ . '/../src/ProgressTracker.php';
 
 use itarato\ProgressTracker\Tracker as Tracker;
 use itarato\ProgressTracker\Reporter as Reporter;

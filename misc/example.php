@@ -1,6 +1,6 @@
 <?php
 
-require_once 'ProgressTracker.php';
+require_once __DIR__ . '/../src/ProgressTracker.php';
 
 $string_reporter = new itarato\ProgressTracker\Reporter\StringReporter();
 $tracker = new itarato\ProgressTracker\Tracker\ProgressGeneralTracker($string_reporter);

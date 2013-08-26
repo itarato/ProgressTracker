@@ -7,7 +7,7 @@ namespace itarato\ProgressTracker\Tracker;
 
 use itarato\ProgressTracker\Reporter\IReporter;
 
-require_once 'ProgressReporter.php';
+require_once __DIR__ . '/ProgressReporter.php';
 
 define('PROGRESS_REPORTER_NUMBER_PRECISION', 2);
 
