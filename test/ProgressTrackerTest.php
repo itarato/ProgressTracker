@@ -51,6 +51,13 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue(is_string($p->report()));
   }
 
+  public function testCSVStringReporter() {
+    $r = new Reporter\CSVStringReporter();
+    $p = new Tracker\ProgressGeneralTracker($r);
+    $this->assertTrue(is_string($p->report()));
+    $this->assertEquals(preg_match('/^[\d.,]*$/', $p->report()), 1);
+  }
+
   public function testSocketIOReporter() {
     $this->markTestSkipped();
 

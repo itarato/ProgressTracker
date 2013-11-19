@@ -10,19 +10,19 @@ use ElephantIO\Client;
 
 interface IReporter {
 
-  public function report($report);
+  public function report(array $report);
 
 }
 
 abstract class AbstractReporter implements IReporter {
 
-  public abstract function report($report);
+  public abstract function report(array $report);
 
 }
 
 class ArrayReporter implements IReporter {
 
-  public function report($report) {
+  public function report(array $report) {
     return $report;
   }
 
@@ -30,7 +30,7 @@ class ArrayReporter implements IReporter {
 
 class StringReporter implements IReporter {
 
-  public function report($report) {
+  public function report(array $report) {
     $out_array = array();
     foreach ($report as $section_id => $section) {
       $section_array = array();
@@ -40,6 +40,20 @@ class StringReporter implements IReporter {
       $out_array[] = '[' . $section_id . '] ' . implode(' ', $section_array);
     }
     return implode(' | ', $out_array);
+  }
+
+}
+
+class CSVStringReporter implements IReporter {
+
+  public function report(array $report) {
+    $items = array();
+    foreach ($report as $category) {
+      foreach ($category as $item) {
+        $items[] = $item;
+      }
+    }
+    return implode(',', $items);
   }
 
 }
@@ -76,7 +90,7 @@ class SocketIOReporter implements IReporter {
     $this->name = $name ?: implode('-', $this->filter);
   }
 
-  public function report($report) {
+  public function report(array $report) {
     require_once __DIR__ . '/../vendor/autoload.php';
 
     $item = $report;

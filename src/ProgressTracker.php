@@ -143,11 +143,6 @@ class ProgressMemoryTracker extends AbstractTracker {
       memory_get_usage(FALSE) - $this->memoryInitial;
   }
 
-  public function getAvailableMemory() {
-    $totalAvailable = ProgressMemoryTracker::returnBytes(ini_get('memory_limit'));
-    return $totalAvailable - memory_get_usage(TRUE);
-  }
-
   protected static function returnBytes($iniValue) {
     $iniValue = trim($iniValue);
     $last = strtolower($iniValue[strlen($iniValue) - 1]);
@@ -170,8 +165,6 @@ class ProgressMemoryTracker extends AbstractTracker {
     return $this->report = array(
       'mem' => array(
         'all' => $this->getConsumption(),
-        'init' => memory_get_usage(TRUE),
-        'total' => $this->getAvailableMemory(),
       ),
     );
   }
