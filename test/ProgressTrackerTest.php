@@ -59,32 +59,38 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSocketIOReporter() {
-    $this->markTestSkipped();
-
-    $r = new Reporter\SocketIOReporter();
+    $elephant = $elephant = new ElephantClientStub();
+    $r = new Reporter\SocketIOReporter($elephant);
     $generalProgress = new Tracker\ProgressGeneralTracker($r);
 
     for ($i = 100; $i--;) {
-      usleep(rand(100000, 200000));
       $generalProgress->report();
     }
   }
 
   public function testSocketIOReporterForMemory() {
-    $this->markTestSkipped();
-
-    $r = new Reporter\SocketIOReporter('http://localhost:8888', array('mem', 'all'));
+    $elephant = new ElephantClientStub();
+    $r = new Reporter\SocketIOReporter($elephant, array('mem', 'all'));
     $generalProgress = new Tracker\ProgressGeneralTracker($r);
 
     $dummyArray = array();
 
     for ($i = 100; $i--;) {
-      usleep(rand(100000, 200000));
-
       $dummyArray[] = str_repeat('*', 10000);
-
       $generalProgress->report();
     }
   }
+
+}
+
+class ElephantClientStub extends \ElephantIO\Client {
+
+  public function __construct() {}
+
+  public function init($keepalive = false) {}
+
+  public function send($type, $id = null, $endpoint = null, $message = null) {}
+
+  public function close() {}
 
 }

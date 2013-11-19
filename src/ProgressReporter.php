@@ -60,7 +60,10 @@ class CSVStringReporter implements IReporter {
 
 class SocketIOReporter implements IReporter {
 
-  public $connectionURI;
+  /**
+   * @var \ElephantIO\Client
+   */
+  protected $socketClient;
 
   protected $filter;
 
@@ -83,31 +86,30 @@ class SocketIOReporter implements IReporter {
    * @param $name
    *  Name to identify. Optional.
    */
-  public function __construct($connectionURI = 'http://localhost:8888', array $filter = array(), $name = '') {
-    $this->connectionURI = $connectionURI;
+  public function __construct(Client $socket_client, array $filter = array(), $name = '') {
+    $this->socketClient = $socket_client;
+    $this->socketClient->init();
+
     $this->filter = $filter ?: array('time', 'step');
     $this->hash = spl_object_hash($this);
     $this->name = $name ?: implode('-', $this->filter);
   }
 
-  public function report(array $report) {
-    require_once __DIR__ . '/../vendor/autoload.php';
+  public function __destruct() {
+    $this->socketClient->close();
+  }
 
+  public function report(array $report) {
     $item = $report;
     foreach ($this->filter as $filter) {
       $item = $item[$filter];
     }
 
-    $elephant = new Client($this->connectionURI, 'socket.io', 1, FALSE, TRUE, TRUE);
-    $elephant->init();
-
-    $elephant->send(Client::TYPE_EVENT, NULL, NULL, json_encode(array('name' => 'progress', 'args' => array(
+    $this->socketClient->send(Client::TYPE_EVENT, NULL, NULL, json_encode(array('name' => 'progress', 'args' => array(
       'line' => $this->hash,
       'value' => $item,
       'name' => $this->name,
     ))));
-
-    $elephant->close();
   }
 
 }

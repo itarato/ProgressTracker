@@ -5,6 +5,8 @@
 
 namespace itarato\ProgressTracker\Tracker;
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use itarato\ProgressTracker\Reporter\IReporter;
 
 require_once __DIR__ . '/ProgressReporter.php';
