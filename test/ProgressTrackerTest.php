@@ -59,7 +59,7 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSocketIOReporter() {
-    $this->markTestSkipped();
+//    $this->markTestSkipped();
 
     $r = new Reporter\SocketIOReporter();
     $generalProgress = new Tracker\ProgressGeneralTracker($r);
