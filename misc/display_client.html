@@ -1,7 +1,10 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/node_modules/smoothie/smoothie.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
-<canvas id="display" width="400" height="100"></canvas>
+<canvas id="display" width="400" height="200"></canvas>
+
+<ul id="source_list"></ul>
 
 <script>
   var socket = io.connect('http://localhost');
@@ -12,10 +15,12 @@
   socket.on('update', function (data) {
     if (!lines.hasOwnProperty(data.line)) {
       lines[data.line] = new TimeSeries();
+      var color = getRandomColor();
       smoothie.addTimeSeries(lines[data.line], {
-        strokeStyle: getRandomColor(),
+        strokeStyle: color,
         lineWidth: 3
       });
+      jQuery('#source_list').append('<li style="color:' + color + '">' + data.name + '</li>');
     }
 
     lines[data.line].append(new Date().getTime(), data.value);

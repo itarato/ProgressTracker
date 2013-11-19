@@ -41,6 +41,10 @@ abstract class AbstractTracker implements IProgressReporter {
     return $this->reporter->report($this->report);
   }
 
+  public function setReporter(IReporter $reporter) {
+    $this->reporter = $reporter;
+  }
+
 }
 
 abstract class ProgressBasicTracker extends AbstractTracker {

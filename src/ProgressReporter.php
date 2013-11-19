@@ -52,10 +52,28 @@ class SocketIOReporter implements IReporter {
 
   protected $hash;
 
-  public function __construct($connectionURI = 'http://localhost:8888') {
+  protected $name;
+
+  /**
+   * Constructor.
+   *
+   * @param string $connectionURI
+   *  URI for the node server.
+   * @param array $filter
+   *  Selecting the value to send to the monitor. Examples:
+   *    - [mem, all],
+   *    - [mem, init],
+   *    - [mem, total],
+   *    - [time, step],
+   *    - [time, total].
+   * @param $name
+   *  Name to identify. Optional.
+   */
+  public function __construct($connectionURI = 'http://localhost:8888', array $filter = array(), $name = '') {
     $this->connectionURI = $connectionURI;
-    $this->filter = array('time', 'step');
+    $this->filter = $filter ?: array('time', 'step');
     $this->hash = spl_object_hash($this);
+    $this->name = $name ?: implode('-', $this->filter);
   }
 
   public function report($report) {
@@ -72,6 +90,7 @@ class SocketIOReporter implements IReporter {
     $elephant->send(Client::TYPE_EVENT, NULL, NULL, json_encode(array('name' => 'progress', 'args' => array(
       'line' => $this->hash,
       'value' => $item,
+      'name' => $this->name,
     ))));
 
     $elephant->close();

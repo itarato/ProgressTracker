@@ -10,3 +10,7 @@ for ($i = 10; $i--;) {
   usleep(rand(100000, 900000));
   echo $tracker->report() . "\n";
 }
+
+$array_reporter = new \itarato\ProgressTracker\Reporter\ArrayReporter();
+$tracker->setReporter($array_reporter);
+var_dump($tracker->report());

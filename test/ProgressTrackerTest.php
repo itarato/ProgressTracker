@@ -27,7 +27,6 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
     $generalProgress = new Tracker\ProgressGeneralTracker($this->defaultStringReporter);
 
     for ($i = 10; $i--;) {
-      // usleep(rand(100000, 900000));
       $this->assertNotEmpty($generalProgress->report());
     }
   }
@@ -36,7 +35,6 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
     $batchProcess = new Tracker\ProgressBatchTracker($this->defaultStringReporter, 10);
 
     for ($i = 10; $i--;) {
-      // usleep(500000);
       $this->assertNotEmpty($batchProcess->report());
     }
   }
@@ -61,6 +59,23 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
 
     for ($i = 100; $i--;) {
       usleep(rand(100000, 200000));
+      $generalProgress->report();
+    }
+  }
+
+  public function testSocketIOReporterForMemory() {
+    $this->markTestSkipped();
+
+    $r = new Reporter\SocketIOReporter('http://localhost:8888', array('mem', 'all'));
+    $generalProgress = new Tracker\ProgressGeneralTracker($r);
+
+    $dummyArray = array();
+
+    for ($i = 100; $i--;) {
+      usleep(rand(100000, 200000));
+
+      $dummyArray[] = str_repeat('*', 10000);
+
       $generalProgress->report();
     }
   }
