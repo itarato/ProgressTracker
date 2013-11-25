@@ -131,7 +131,7 @@ Usage
 Handy tools
 -----------
 
-There is 2 wrapper for the most common usecases:
+There are 2 wrappers for the most common use cases:
 
 Reporting single steps in an iterative process - just insert this code:
 
@@ -144,4 +144,3 @@ Reporting single steps in an iterative process - just insert this code:
 
     require_once 'PATH_TO_LIB/src/tools.php';
     progress_tracker_instant_socket_report('my process');
-    
