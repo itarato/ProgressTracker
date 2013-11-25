@@ -73,5 +73,75 @@ The server listens for clients to join. Then the reporter send the data packets 
 
 Return format is a comma separated string, which is easy to paste to any kind of spreadsheet application for further analysis.
 
-# Usage
 
+Usage
+-----
+
+    // Load the library:
+    require_once 'PATH_TO_LIB/src/ProgressTracker.php';
+
+    // To avoid using long namespaces:
+    use itarato\ProgressTracker\Reporter;
+    use itarato\ProgressTracker\Tracker;
+
+
+    // First - create a reporter:
+    // string reporter
+    $reporter = new Reporter\StringReporter();
+
+    // or array reporter:
+    $reporter = new Reporter\ArrayReporter();
+
+    // or csv reporter:
+    $reporter = new Reporter\CSVStringReporter();
+
+    // or socketio reporter:
+    $socketio_client = new ElephantIO\Client('http://localhost:8888', 'socket.io', 1, FALSE, TRUE, TRUE);
+    $reporter = new Reporter\SocketIOReporter($socketio_client, array(), $name);
+
+    // Second param for socketio reporter is the path to the item you want to report.
+    // Default is [time, step]. To report memory, use [mem, all]:
+    $reporter = new Reporter\SocketIOReporter($socketio_client, array('mem', 'all'), $name);
+
+
+    // Second - create the tracker:
+    // memory tracker:
+    $tracker = new Tracker\ProgressMemoryTracker($reporter);
+
+    // or simple tracker:
+    $tracker = new Tracker\ProgressGeneralTracker($reporter);
+
+    // or batch process tracker (10 is the total number of process):
+    $tracker = new Tracker\ProgressBatchTracker($reporter, 10);
+
+
+    // Third - track:
+
+    // Simply generate a snapshot of the current state:
+    $tracker->snapshot();
+
+    // Create the snapshot and generate a report:
+    $tracker->report();
+
+
+    // If you need to change the reporter on the fly:
+    $tracker->setReporter($other_reporter);
+
+
+Handy tools
+-----------
+
+There is 2 wrapper for the most common usecases:
+
+Reporting single steps in an iterative process - just insert this code:
+
+    // csv generator
+
+    require_once 'PATH_TO_LIB/src/tools.php';
+    progress_tracker_instant_csv_report('echo');
+
+    // socketio version
+
+    require_once 'PATH_TO_LIB/src/tools.php';
+    progress_tracker_instant_socket_report('my process');
+    
