@@ -3,16 +3,22 @@ ProgressTracker
 
 [![Build Status](https://travis-ci.org/itarato/ProgressTracker.png?branch=master)](https://travis-ci.org/itarato/ProgressTracker)
 
+# What is ProgressTracker ?
+
+ProgressTracker is a tiny developer tool to analyze your PHP code performance - time and memory. It has 2 main parts: the trackers and reporters. A tracker is for measuring memory consumption and process time.  It can be an overall measurement, or iterative (per-step). Reporter is the output part - which can be a simple string, one value, csv line or a message to a SocketIO server.
+
 Example usage
 -------------
 
     <?php
+    use itarato\ProgressTracker\Reporter;
+    use itarato\ProgressTracker\Tracker;
+
     $string_reporter = new Reporter\StringReporter();
     $tracker = new Tracker\ProgressGeneralTracker($string_reporter);
 
     for ($i = 10; $i--;) {
-      // Illusion of hard CPU/IO work.
-      usleep(rand(100000, 900000));
+      // ... something process heavy operation ...
       echo $tracker->report() . "\n";
     }
     ?>
@@ -20,7 +26,6 @@ Example usage
 Example string output
 ---------------------
 
-    # php example.php
     [mem] all 1176 init 524288 total 1073217536 | [time] step 0.35 total 0.35
     [mem] all 2952 init 524288 total 1073217536 | [time] step 0.28 total 0.63
     [mem] all 2928 init 524288 total 1073217536 | [time] step 0.49 total 1.12
@@ -31,12 +36,6 @@ Example string output
     [mem] all 2928 init 524288 total 1073217536 | [time] step 0.68 total 4.92
     [mem] all 2928 init 524288 total 1073217536 | [time] step 0.22 total 5.13
     [mem] all 2928 init 524288 total 1073217536 | [time] step 0.16 total 5.29
-
-
-Tiny PHP classes to measure PHP process, performance and resource consumption.
-
-ProgressTracker has 3 type of performance trackers and 3 types of reporters.
-
 
 Progress trackers
 -----------------
@@ -69,3 +68,10 @@ Return format is a single line string.
 
 Returns only the current step time to a SocketIO server. An example implementation can be found at *display_server* and *display_client.html*.
 The server listens for clients to join. Then the reporter send the data packets to the server, which distributes it to the clients.
+
+**CSV reporter**
+
+Return format is a comma separated string, which is easy to paste to any kind of spreadsheet application for further analysis.
+
+# Usage
+
