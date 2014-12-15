@@ -33,7 +33,6 @@ class SocketIOReporter implements IReporter {
    *    - [time, total].
    * @param string $name
    *  Name to identify. Optional.
-   * @internal param string $connectionURI URI for the node server.*  URI for the node server.
    */
   public function __construct(Client $socket_client, array $filter = array(), $name = '') {
     $this->socketClient = $socket_client;
