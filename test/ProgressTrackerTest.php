@@ -4,27 +4,37 @@
  * Example usage
  */
 
-require_once __DIR__ . '/../src/ProgressTracker.php';
+use ProgressTracker\Reporter\ArrayReporter;
+use ProgressTracker\Reporter\CSVStringReporter;
+use ProgressTracker\Reporter\SocketIOReporter;
+use ProgressTracker\Reporter\StringReporter;
+use ProgressTracker\Tracker\ProgressBatchTracker;
+use ProgressTracker\Tracker\ProgressGeneralTracker;
+use ProgressTracker\Tracker\ProgressMemoryTracker;
 
-use itarato\ProgressTracker\Tracker as Tracker;
-use itarato\ProgressTracker\Reporter as Reporter;
+require_once __DIR__ . '/../vendor/autoload.php';
 
 class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
 
   public $defaultStringReporter;
 
+  public $clientMock;
+
   public function setUp() {
     parent::setUp();
-    $this->defaultStringReporter = new Reporter\StringReporter();
+    $this->defaultStringReporter = new StringReporter();
+
+    $engineMock = $this->getMock('\ElephantIO\Engine\SocketIO\Version1X', [], ['']);
+    $this->clientMock = $this->getMock('\ElephantIO\Client', [], [$engineMock, new \Psr\Log\NullLogger()]);
   }
 
   public function testMemoryTracker() {
-    $mt = new Tracker\ProgressMemoryTracker($this->defaultStringReporter);
+    $mt = new ProgressMemoryTracker($this->defaultStringReporter);
     $this->assertNotEmpty($mt->report());
   }
 
   public function testGeneralTracker() {
-    $generalProgress = new Tracker\ProgressGeneralTracker($this->defaultStringReporter);
+    $generalProgress = new ProgressGeneralTracker($this->defaultStringReporter);
 
     for ($i = 10; $i--;) {
       $this->assertNotEmpty($generalProgress->report());
@@ -32,7 +42,7 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testBatchTracker() {
-    $batchProcess = new Tracker\ProgressBatchTracker($this->defaultStringReporter, 10);
+    $batchProcess = new ProgressBatchTracker($this->defaultStringReporter, 10);
 
     for ($i = 10; $i--;) {
       $this->assertNotEmpty($batchProcess->report());
@@ -40,28 +50,27 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testArrayReporter() {
-    $r = new Reporter\ArrayReporter();
-    $p = new Tracker\ProgressGeneralTracker($r);
+    $r = new ArrayReporter();
+    $p = new ProgressGeneralTracker($r);
     $this->assertTrue(is_array($p->report()));
   }
 
   public function testStringReporter() {
-    $r = new Reporter\StringReporter();
-    $p = new Tracker\ProgressGeneralTracker($r);
+    $r = new StringReporter();
+    $p = new ProgressGeneralTracker($r);
     $this->assertTrue(is_string($p->report()));
   }
 
   public function testCSVStringReporter() {
-    $r = new Reporter\CSVStringReporter();
-    $p = new Tracker\ProgressGeneralTracker($r);
+    $r = new CSVStringReporter();
+    $p = new ProgressGeneralTracker($r);
     $this->assertTrue(is_string($p->report()));
     $this->assertEquals(preg_match('/^[\d.,]*$/', $p->report()), 1);
   }
 
   public function testSocketIOReporter() {
-    $elephant = $elephant = new ElephantClientStub();
-    $r = new Reporter\SocketIOReporter($elephant);
-    $generalProgress = new Tracker\ProgressGeneralTracker($r);
+    $r = new SocketIOReporter($this->clientMock);
+    $generalProgress = new ProgressGeneralTracker($r);
 
     for ($i = 100; $i--;) {
       $generalProgress->report();
@@ -69,9 +78,8 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSocketIOReporterForMemory() {
-    $elephant = new ElephantClientStub();
-    $r = new Reporter\SocketIOReporter($elephant, array('mem', 'all'));
-    $generalProgress = new Tracker\ProgressGeneralTracker($r);
+    $r = new SocketIOReporter($this->clientMock, array('mem', 'all'));
+    $generalProgress = new ProgressGeneralTracker($r);
 
     $dummyArray = array();
 
@@ -80,17 +88,5 @@ class ProgressTrackerTest extends PHPUnit_Framework_TestCase {
       $generalProgress->report();
     }
   }
-
-}
-
-class ElephantClientStub extends \ElephantIO\Client {
-
-  public function __construct() {}
-
-  public function init($keepalive = false) {}
-
-  public function send($type, $id = null, $endpoint = null, $message = null) {}
-
-  public function close() {}
 
 }

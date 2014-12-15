@@ -16,7 +16,7 @@
   },
   "autoload": {
     "psr-4": {
-      "ProgressTracker//": "src/ProgressTracker/"
+      "ProgressTracker\\": "src/itarato/ProgressTracker/"
     }
   }
 }

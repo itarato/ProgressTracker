@@ -25,7 +25,7 @@ class ProgressBatchTracker extends ProgressGeneralTracker {
     $this->report = parent::snapshot();
 
     $time_elapsed = microtime(TRUE) - $this->startTime;
-    $time_left = number_format(($time_elapsed / $this->itemsFinishedCount) * ($this->itemsTotalCount - $this->itemsFinishedCount), PROGRESS_REPORTER_NUMBER_PRECISION);
+    $time_left = number_format(($time_elapsed / $this->itemsFinishedCount) * ($this->itemsTotalCount - $this->itemsFinishedCount), self::NUMBER_PRECISION);
 
     $this->report['batch'] = array(
       'done' => $this->itemsFinishedCount,

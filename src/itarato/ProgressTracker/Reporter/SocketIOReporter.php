@@ -36,7 +36,7 @@ class SocketIOReporter implements IReporter {
    */
   public function __construct(Client $socket_client, array $filter = array(), $name = '') {
     $this->socketClient = $socket_client;
-    $this->socketClient->init();
+    $this->socketClient->initialize(TRUE);
 
     $this->filter = $filter ?: array('time', 'step');
     $this->hash = spl_object_hash($this);
@@ -53,11 +53,11 @@ class SocketIOReporter implements IReporter {
       $item = $item[$filter];
     }
 
-    $this->socketClient->send(Client::TYPE_EVENT, NULL, NULL, json_encode(array('name' => 'progress', 'args' => array(
+    $this->socketClient->emit(__METHOD__, array('name' => 'progress', 'args' => array(
       'line' => $this->hash,
       'value' => $item,
       'name' => $this->name,
-    ))));
+    )));
   }
 
 }

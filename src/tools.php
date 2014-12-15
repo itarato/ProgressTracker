@@ -15,7 +15,10 @@ function progress_tracker_instant_socket_report($name = 'instant') {
   static $progress_tracker;
 
   if (!isset($progress_tracker)) {
-    $socketio_client = new Client('http://localhost:8888', 'socket.io', 1, FALSE, TRUE, TRUE);
+    $engine = new \ElephantIO\Engine\SocketIO\Version1X('http://localhost:8888');
+    $logger = new \Psr\Log\NullLogger();
+
+    $socketio_client = new Client($engine, $logger);
     $socket_reporter = new SocketIOReporter($socketio_client, array(), $name);
     $progress_tracker = new ProgressGeneralTracker($socket_reporter);
   }
