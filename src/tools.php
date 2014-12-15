@@ -4,10 +4,8 @@
  * Various helper functions and factories.
  */
 
-require_once __DIR__ . '/ProgressTracker.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-use itarato\ProgressTracker\Reporter;
-use itarato\ProgressTracker\Tracker;
 use ElephantIO\Client;
 
 function progress_tracker_instant_socket_report($name = 'instant') {

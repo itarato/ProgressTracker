@@ -1,67 +1,16 @@
 <?php
 /**
  * @file
- * Reporters.
  */
 
-namespace itarato\ProgressTracker\Reporter;
+namespace ProgressTracker\Reporter;
 
 use ElephantIO\Client;
-
-interface IReporter {
-
-  public function report(array $report);
-
-}
-
-abstract class AbstractReporter implements IReporter {
-
-  public abstract function report(array $report);
-
-}
-
-class ArrayReporter implements IReporter {
-
-  public function report(array $report) {
-    return $report;
-  }
-
-}
-
-class StringReporter implements IReporter {
-
-  public function report(array $report) {
-    $out_array = array();
-    foreach ($report as $section_id => $section) {
-      $section_array = array();
-      foreach ($section as $data_name => $data) {
-        $section_array[] = "$data_name $data";
-      }
-      $out_array[] = '[' . $section_id . '] ' . implode(' ', $section_array);
-    }
-    return implode(' | ', $out_array);
-  }
-
-}
-
-class CSVStringReporter implements IReporter {
-
-  public function report(array $report) {
-    $items = array();
-    foreach ($report as $category) {
-      foreach ($category as $item) {
-        $items[] = $item;
-      }
-    }
-    return implode(',', $items);
-  }
-
-}
 
 class SocketIOReporter implements IReporter {
 
   /**
-   * @var \ElephantIO\Client
+   * @var Client
    */
   protected $socketClient;
 
@@ -74,8 +23,7 @@ class SocketIOReporter implements IReporter {
   /**
    * Constructor.
    *
-   * @param string $connectionURI
-   *  URI for the node server.
+   * @param Client $socket_client
    * @param array $filter
    *  Selecting the value to send to the monitor. Examples:
    *    - [mem, all],
@@ -83,8 +31,9 @@ class SocketIOReporter implements IReporter {
    *    - [mem, total],
    *    - [time, step],
    *    - [time, total].
-   * @param $name
+   * @param string $name
    *  Name to identify. Optional.
+   * @internal param string $connectionURI URI for the node server.*  URI for the node server.
    */
   public function __construct(Client $socket_client, array $filter = array(), $name = '') {
     $this->socketClient = $socket_client;

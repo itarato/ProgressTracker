@@ -4,6 +4,8 @@
  * CallerTracker definitions.
  */
 
+namespace ProgressTracker;
+
 /**
  * Class CallerTracker
  *
