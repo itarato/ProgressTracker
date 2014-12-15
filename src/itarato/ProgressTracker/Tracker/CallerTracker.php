@@ -4,7 +4,7 @@
  * CallerTracker definitions.
  */
 
-namespace ProgressTracker;
+namespace ProgressTracker\Tracker;
 
 /**
  * Class CallerTracker
@@ -39,7 +39,7 @@ class CallerTracker {
   /**
    * Name of the function to call for printing the result.
    *
-   * @var callable
+   * @var string
    */
   protected $callerFunctionName;
 
@@ -51,10 +51,10 @@ class CallerTracker {
    *  Key to identify the instance - so it can be called from the static cache.
    * @param string $result_print_function
    *  Function to use for printing the result.
-   * @return mixed
-   *  CallerTracker instance.
+   * @return mixed CallerTracker instance.
+   * CallerTracker instance.
    */
-  public static function getInstance($key = 'default', callable $result_print_function = 'var_dump') {
+  public static function getInstance($key = 'default', $result_print_function = 'var_dump') {
     static $instances = array();
     if (!isset($instances[$key])) {
       $instances[$key] = new static($result_print_function);
@@ -108,7 +108,7 @@ class CallerTracker {
       );
     }
     if (is_callable($this->resultPrintFunction)) {
-      $this->resultPrintFunction($result);
+      call_user_func($this->resultPrintFunction, $result);
     }
   }
 
